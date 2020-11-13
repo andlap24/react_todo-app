@@ -1,25 +1,45 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
-function App() {
+import { getUsers, getInfo } from './api/api';
+
+import { UsersList } from './components/UsersList';
+import { UserInfo } from './components/UserInfo';
+import { Context } from './context';
+
+const App = () => {
+  const [users, setUsers] = useState([]);
+  const [userInfo, setUserUnfo] = useState([]);
+
+  useEffect(async() => {
+    const starWarsUsers = await getUsers('/people');
+
+    setUsers(starWarsUsers);
+  }, []);
+
+  const getUserInfo = async(id) => {
+    const starWarsUserInfo = await getInfo(id);
+
+    setUserUnfo(starWarsUserInfo);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Context.Provider value={users}>
+      <div className="App">
+        <div className="App__body">
+          <h1 className="App__title">
+            Star
+            <span>Wars</span>
+          </h1>
+          <UsersList
+            users={users}
+            getUserInfo={getUserInfo}
+          />
+          <UserInfo userInfo={userInfo} />
+        </div>
+      </div>
+    </Context.Provider>
   );
-}
+};
 
 export default App;
