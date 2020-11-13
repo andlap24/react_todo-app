@@ -18,7 +18,7 @@ export const UsersList = ({ users }) => (
     <div>
       <ul>
         <li>
-          
+          Some info
         </li>
       </ul>
     </div>
