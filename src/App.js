@@ -3,13 +3,16 @@ import './App.css';
 
 import { getUsers, getInfo } from './api/api';
 
+import { Loader } from './components/Loader';
 import { UsersList } from './components/UsersList';
 import { UserInfo } from './components/UserInfo';
 import { Context } from './context';
 
 const App = () => {
   const [users, setUsers] = useState([]);
-  const [userInfo, setUserUnfo] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
+  const [displayUserInfo, setDisplayUserInfo] = useState([false]);
+  const [selectUser, setSelectUser] = useState([]);
 
   useEffect(async() => {
     const starWarsUsers = await getUsers('/people');
@@ -17,10 +20,19 @@ const App = () => {
     setUsers(starWarsUsers);
   }, []);
 
-  const getUserInfo = async(id) => {
-    const starWarsUserInfo = await getInfo(id);
+  const getUserInfo = async(url) => {
+    const starWarsUserInfo = await getInfo(url);
 
-    setUserUnfo(starWarsUserInfo);
+    setUserInfo(starWarsUserInfo);
+    togglerUserInfo();
+  };
+
+  const togglerUserInfo = () => {
+    setDisplayUserInfo(!displayUserInfo);
+  };
+
+  const changeSelectUser = (userName) => {
+    setSelectUser(userName);
   };
 
   return (
@@ -28,14 +40,25 @@ const App = () => {
       <div className="App">
         <div className="App__body">
           <h1 className="App__title">
-            Star
-            <span>Wars</span>
+            to
+            <span>do</span>
           </h1>
           <UsersList
             users={users}
+            displayUserInfo={displayUserInfo}
+            selectUser={selectUser}
             getUserInfo={getUserInfo}
+            changeSelectUser={changeSelectUser}
           />
-          <UserInfo userInfo={userInfo} />
+          {displayUserInfo
+            ? <Loader />
+            : (
+              <UserInfo
+                userInfo={userInfo}
+                displayUserInfo={displayUserInfo}
+              />
+            )
+          }
         </div>
       </div>
     </Context.Provider>

@@ -16,8 +16,12 @@ export const getUsers = async(url) => {
   return users;
 };
 
-export const getInfo = async(userId) => {
-  const userInfo = await getData(`/people/${userId}`);
+export const getInfo = async url => fetch(url)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`${response.status} - ${response.statusText}`);
+    }
 
-  return userInfo;
-};
+    return response.json();
+  })
+  .then(result => result);
